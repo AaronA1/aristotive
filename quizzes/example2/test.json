@@ -1,0 +1,16 @@
+{
+    "questions": [
+        {
+            "type": "multi-choice",
+            "question": "What is 3 x 3?",
+            "options": ["3", "6", "9", "12"],
+            "answer": "9"
+        },
+        {
+            "type": "multi-choice",
+            "question": "What is the word 'House' an example of?",
+            "options": ["Adjective", "Adverb", "Verb", "Noun"],
+            "answer": "Noun"
+        }
+    ]
+}

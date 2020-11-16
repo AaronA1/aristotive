@@ -1,0 +1,16 @@
+{
+    "questions": [
+        {
+            "type": "multi-choice",
+            "question": "What is 2 x 2?",
+            "options": ["1", "2", "3", "4"],
+            "answer": "4"
+        },
+        {
+            "type": "multi-choice",
+            "question": "What is the word 'coding' an example of?",
+            "options": ["Adjective", "Adverb", "Verb", "Noun"],
+            "answer": "Verb"
+        }
+    ]
+}
