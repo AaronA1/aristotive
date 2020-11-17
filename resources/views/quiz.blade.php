@@ -1,5 +1,9 @@
-<h1>Hello</h1>
+@extends('layouts.app')
 
-@foreach($quizArray['questions'] as $question)
-    <p>{{$question['question']}}</p>
-@endforeach
+@section('content')
+    <h1>Hello</h1>
+    <example-component></example-component>
+    @foreach($quizArray['questions'] as $question)
+        <p>{{$question['question']}}</p>
+    @endforeach
+@endsection

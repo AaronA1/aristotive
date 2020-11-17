@@ -18,3 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/quiz/{number?}', 'QuizController@initialise');
+
+Route::get('/home', function () {
+    return view('home');
+});
