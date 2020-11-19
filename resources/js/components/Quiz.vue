@@ -2,9 +2,14 @@
     <div id="quiz">
         <b-container class="bv-example-row">
             <b-row>
-                <b-col sm="6" offset="3">
-                    <question-card v-if="questionsobj.length" :currentQuestion="questionsobj[index]" :question="questionsobj[index]"
-                    v-on:next-question="next()" v-on:prev-question="previous()"></question-card>
+                <b-col sm="12" offset="0">
+                    <question-card
+                        v-if="questionsObject.length"
+                        :question="questionsObject[index]"
+                        :length="questionsObject.length"
+                        v-on:next-question="next"
+                        v-on:prev-question="previous">
+                    </question-card>
                 </b-col>
             </b-row>
         </b-container>
@@ -18,13 +23,19 @@ export default {
     data() {
         return {
             index: 0,
-            questionsobj: null,
+            questionsObject: null,
+            answers: []
         }
     },
     methods: {
-        next() {
-            if(this.index !== this.questionsobj.length-1) {
-                this.index++
+        next : function (answer) {
+            if(answer === null) {
+                return;
+            }
+            if(this.index !== this.questionsObject.length-1) {
+                this.answers.splice(this.index, 1, answer)
+                this.index++;
+                console.log(this.answers);
             }
         },
         previous() {
@@ -34,7 +45,7 @@ export default {
         }
     },
     created() {
-        this.questionsobj = JSON.parse(this.questions);
+        this.questionsObject = JSON.parse(this.questions);
     }
 }
 </script>

@@ -18,10 +18,10 @@
                 </b-list-group-item>
             </b-list-group>
 
-            <b-button v-on:click="$emit('prev-question')" variant="primary">
+            <b-button v-if="this.localIndex !== 1" v-on:click="$emit('prev-question'); previousQuestion()" variant="primary">
                 Previous
             </b-button>
-            <b-button v-on:click="$emit('next-question')" variant="success">
+            <b-button v-if="this.localIndex < length" v-on:click="$emit('next-question', selectedAnswer); nextQuestion()" variant="success">
                 Next
             </b-button>
         </b-jumbotron>
@@ -31,50 +31,37 @@
 <script>
 import _ from 'lodash'
 export default {
-    props: ['question'],
+    props: ['question', 'length'],
     data: function() {
         return {
             selectedAnswer: null,
-            correctAnswer: this.question.answer,
             shuffledOptions: [],
-            answered: false
-        }
-    },
-    updated() {
-        console.log(this.selectedAnswer);
-    },
-    watch: {
-        currentQuestion: {
-            immediate: true,
-            handler() {
-                this.selectedAnswer = null
-                this.answered = false
-                this.shuffleOptions()
-            }
+            localIndex: 1,
         }
     },
     methods: {
         selectAnswer(option) {
-            this.selectedAnswer = option
-        },
-        submitAnswer() {
-            let isCorrect = false
-            if (this.selectedAnswer === this.correctAnswer) {
-                isCorrect = true
-            }
-            this.answered = true
+            this.selectedAnswer = option;
+            console.log(this.selectedAnswer);
         },
         shuffleOptions() {
             let options = this.question.options
             this.shuffledOptions = _.shuffle(options)
-            console.log(this.shuffledOptions);
         },
         answerClass(option) {
             let answerClass = ''
-            if (!this.answered && this.selectedAnswer === option) {
+            if (this.selectedAnswer === option) {
                 answerClass = 'selected'
             }
             return answerClass
+        },
+        previousQuestion() {
+            this.localIndex--
+            console.log(this.localIndex);
+        },
+        nextQuestion() {
+            this.localIndex++
+            console.log(this.localIndex);
         }
     }
 }
@@ -93,11 +80,5 @@ export default {
 }
 .selected {
     background-color: lightblue;
-}
-.correct {
-    background-color: lightgreen;
-}
-.incorrect {
-    background-color: red;
 }
 </style>
