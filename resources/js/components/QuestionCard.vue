@@ -18,11 +18,14 @@
                 </b-list-group-item>
             </b-list-group>
 
-            <b-button v-if="this.localIndex !== 1" v-on:click="$emit('prev-question'); previousQuestion()" variant="primary">
-                Previous
-            </b-button>
+<!--            <b-button v-if="this.localIndex > 1" v-on:click="$emit('prev-question'); previousQuestion()" variant="primary">-->
+<!--                Previous-->
+<!--            </b-button>-->
             <b-button v-if="this.localIndex < length" v-on:click="$emit('next-question', selectedAnswer); nextQuestion()" variant="success">
                 Next
+            </b-button>
+            <b-button v-else v-on:click="$emit('complete-quiz', selectedAnswer)" variant="success">
+                Finish
             </b-button>
         </b-jumbotron>
     </div>
@@ -55,13 +58,17 @@ export default {
             }
             return answerClass
         },
-        previousQuestion() {
-            this.localIndex--
-            console.log(this.localIndex);
-        },
+        // previousQuestion() {
+        //     if(this.selectedAnswer !== null) {
+        //         this.localIndex--
+        //         console.log(this.localIndex);
+        //     }
+        // },
         nextQuestion() {
-            this.localIndex++
-            console.log(this.localIndex);
+            if(this.selectedAnswer !== null) {
+                this.localIndex++
+                console.log(this.localIndex);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@
                         :question="questionsObject[index]"
                         :length="questionsObject.length"
                         v-on:next-question="next"
-                        v-on:prev-question="previous">
+                        v-on:complete-quiz="completeQuiz">
                     </question-card>
                 </b-col>
             </b-row>
@@ -28,21 +28,29 @@ export default {
         }
     },
     methods: {
-        next : function (answer) {
+        next (answer) {
             if(answer === null) {
                 return;
             }
             if(this.index !== this.questionsObject.length-1) {
-                this.answers.splice(this.index, 1, answer)
+                this.answers.push(answer)
                 this.index++;
                 console.log(this.answers);
             }
         },
-        previous() {
-            if(this.index !== 0) {
-                this.index--
+        completeQuiz(answer) {
+            if(answer === null) {
+                return;
             }
+            this.answers.push(answer)
+            console.log(this.answers);
+            console.log('Quiz completed');
         }
+        // previous() {
+        //     if(this.index !== 0) {
+        //         this.index--
+        //     }
+        // }
     },
     created() {
         this.questionsObject = JSON.parse(this.questions);
