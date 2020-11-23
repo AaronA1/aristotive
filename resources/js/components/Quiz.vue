@@ -1,5 +1,5 @@
 <template>
-    <div id="quiz">
+    <div id="quiz" v-if="this.completed === false">
         <b-container class="bv-example-row">
             <b-row>
                 <b-col sm="12" offset="0">
@@ -14,6 +14,22 @@
             </b-row>
         </b-container>
     </div>
+    <div id="results" v-else="">
+        <b-container class="bv-example-row">
+            <b-row>
+                <b-col sm="12" offset="0">
+                    <b-jumbotron>
+                        <template slot="lead">
+                            Results
+                        </template>
+
+                        <hr class="my-4" />
+                        You got {{this.correct}}/{{questionsObject.length}} correct!
+                    </b-jumbotron>
+                </b-col>
+            </b-row>
+        </b-container>
+    </div>
 </template>
 
 <script>
@@ -24,7 +40,9 @@ export default {
         return {
             index: 0,
             questionsObject: null,
-            answers: []
+            answers: [],
+            completed: false,
+            incorrect: 0,
         }
     },
     methods: {
@@ -35,22 +53,25 @@ export default {
             if(this.index !== this.questionsObject.length-1) {
                 this.answers.push(answer)
                 this.index++;
-                console.log(this.answers);
             }
         },
         completeQuiz(answer) {
             if(answer === null) {
                 return;
             }
-            this.answers.push(answer)
-            console.log(this.answers);
-            console.log('Quiz completed');
+            this.answers.push(answer);
+            axios.post('/quiz/results', [location.pathname.split('/').pop(), this.answers]).then(response => {
+                this.completed = true;
+                this.incorrect = response.data;
+            }).catch(error => {
+                console.log(error);
+            });
         }
-        // previous() {
-        //     if(this.index !== 0) {
-        //         this.index--
-        //     }
-        // }
+    },
+    computed: {
+        correct: function() {
+            return this.questionsObject.length-this.incorrect;
+        }
     },
     created() {
         this.questionsObject = JSON.parse(this.questions);

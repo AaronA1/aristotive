@@ -11,6 +11,12 @@
             "question": "What is the word 'coding' an example of?",
             "options": ["Adjective", "Adverb", "Verb", "Noun"],
             "answer": "Verb"
+        },
+        {
+            "type": "multi-choice",
+            "question": "What does HTTP stand for",
+            "options": ["Hyperlink To The Page", "HyperText Transfer Protocol", "Hyperlink Transfer To Page", "HyperText Transport Page"],
+            "answer": "HyperText Transfer Protocol"
         }
     ]
 }

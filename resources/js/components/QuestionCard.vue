@@ -17,10 +17,6 @@
                     {{ option }}
                 </b-list-group-item>
             </b-list-group>
-
-<!--            <b-button v-if="this.localIndex > 1" v-on:click="$emit('prev-question'); previousQuestion()" variant="primary">-->
-<!--                Previous-->
-<!--            </b-button>-->
             <b-button v-if="this.localIndex < length" v-on:click="$emit('next-question', selectedAnswer); nextQuestion()" variant="success">
                 Next
             </b-button>
@@ -58,12 +54,6 @@ export default {
             }
             return answerClass
         },
-        // previousQuestion() {
-        //     if(this.selectedAnswer !== null) {
-        //         this.localIndex--
-        //         console.log(this.localIndex);
-        //     }
-        // },
         nextQuestion() {
             if(this.selectedAnswer !== null) {
                 this.localIndex++

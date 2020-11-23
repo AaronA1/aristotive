@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/quiz/{number?}', 'QuizController@initialise');
+Route::post('/quiz/results', 'QuizController@getResults');
 
 Route::get('/home', function () {
     return view('home');
