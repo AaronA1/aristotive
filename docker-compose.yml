@@ -13,6 +13,8 @@ services:
       - ./:/var/www
     ports:
       - 9000:9000
+    depends_on:
+      - aristotive-db
     environment:
       - "COMPOSER_MEMORY_LIMIT=-1"
 
@@ -31,6 +33,20 @@ services:
     ports:
       - 8084:80
 
+  # The Database
+  aristotive-db:
+    container_name: aristotive-db
+    image: mysql:5.7
+    volumes:
+      - aristotive-db:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=aristotive"
+      - "MYSQL_USER=aristotive"
+      - "MYSQL_PASSWORD=aristotive"
+      - "MYSQL_DATABASE=aristotive"
+    ports:
+      - 33062:3306
+
   composer:
     image: composer:2.0
     command: install --ignore-platform-reqs --no-scripts
@@ -47,3 +63,6 @@ services:
       - NODE_ENV=dev
     volumes:
       - ./:/home/node/app
+
+volumes:
+  aristotive-db:

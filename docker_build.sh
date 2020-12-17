@@ -13,6 +13,7 @@ fi
 docker-compose up --build --remove-orphans -d
 docker-compose exec aristotive-app composer install
 docker-compose exec aristotive-app php artisan key:generate
+docker-compose exec aristotive-app php artisan migrate:fresh --seed
 
 # npm
 docker-compose run aristotive-node npm install
