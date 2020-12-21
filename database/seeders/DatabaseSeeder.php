@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->seedAdmin();
         // \App\Models\User::factory(10)->create();
+    }
+
+    private function seedAdmin()
+    {
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@aristotive.com',
+            'password' => Hash::make('password')
+        ]);
     }
 }
