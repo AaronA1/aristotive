@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +15,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('login');
 });
 
+/** Auth routes */
+//Auth::routes();
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+/** Room routes */
 Route::get('/quiz/{number?}', 'QuizController@initialise');
-Route::post('/quiz/results', 'QuizController@getResults');
+Route::post('/quiz/results', 'QuizController@getResults')->name('join-room');
+Route::resource('room', RoomController::class);
 
-Route::get('/home', function () {
-    return view('home');
-});
+/** Admin routes */
+Route::get('/admin', [App\Http\Controllers\HomeController::class, 'index'])->name('admin');
