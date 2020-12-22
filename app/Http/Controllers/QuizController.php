@@ -2,11 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class QuizController
 {
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function showRoomDashboard(Room $room)
+    {
+        $jsonFile = glob(base_path().'/quizzes/'.$room->path.'/*.{json}');
+        $quizJson = file_get_contents(base_path().'/quizzes/'.$room->path.'/test.json');
+        $quizArray = json_decode($quizJson, true);
+
+        return response(view('admin.room.dashboard', ['room' => $room]));
+    }
 
     public function initialise($number)
     {
