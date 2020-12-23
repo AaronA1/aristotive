@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewQuestion;
+use App\Models\Question;
 use App\Models\Room;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -21,7 +23,8 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $rooms = Room::all();
+        return view('admin.dashboard', ['rooms' => $rooms]);
     }
 
     /**
@@ -32,7 +35,14 @@ class AdminController extends Controller
      */
     public function roomDashboard(Room $room)
     {
-        Log::info(print_r($room->id, true));
-        return view('admin.room.dashboard');
+        Log::info(print_r($room, true));
+        return view('admin.session', ['room' => $room]);
+    }
+
+    public static function nextQuestion()
+    {
+        $question = Question::create(['roomId' => '123', 'questionType' => 'multi', 'question' => 'What\'s my name']);
+//        NewQuestion::dispatch($question);
+        event(new NewQuestion($question));
     }
 }

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
 @section('content')
-    This is the admin dashboard
+    <h1>Admin</h1>
+    <h2>{{$room->id}}</h2>
 @endsection

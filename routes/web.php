@@ -26,7 +26,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 /** Admin routes */
 Route::get('/admin', 'AdminController@dashboard')->name('admin');
-Route::get('/admin/room/{id}', 'AdminController@roomDashboard')->name('roomDash');
+Route::get('/admin/{room}', 'AdminController@roomDashboard')->name('session');
 
 /** Room routes */
 Route::resource('room', 'RoomController')->except(['create', 'edit', 'update']);

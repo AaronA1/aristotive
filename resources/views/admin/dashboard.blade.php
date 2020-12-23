@@ -44,7 +44,9 @@
                     <div class="card-header">Current Rooms</div>
 
                     <div class="card-body">
-                        <h1>List of current rooms here</h1>
+                        @foreach($rooms as $room)
+                        <h1>{{$room->id}}</h1>
+                        @endforeach
                     </div>
                 </div>
             </div>
