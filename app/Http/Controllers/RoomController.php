@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use App\Rules\QuizDirExists;
+use App\Rules\RoomExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -49,6 +50,16 @@ class RoomController extends Controller
     public function show(Room $room)
     {
         return response(view('room.show', ['room' => $room]));
+    }
+
+    public function joinRoom(Request $request)
+    {
+        $validated = $request->validate([
+            'roomId' => ['required', 'string', new RoomExists],
+        ]);
+
+        return redirect()->route('room.show', $validated['roomId']);
+
     }
 
     /**

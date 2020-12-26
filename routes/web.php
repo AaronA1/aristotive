@@ -30,5 +30,10 @@ Route::get('/admin/{room}', 'AdminController@roomDashboard')->name('session');
 
 /** Room routes */
 Route::resource('room', 'RoomController')->except(['create', 'edit', 'update']);
+
+/** Quiz Routes */
+Route::post('/quiz', 'RoomController@joinRoom')->name('joinRoom');
+
+/** Old Routes */
 Route::get('/quiz/{number?}', 'QuizController@initialise');
 Route::post('/quiz/results', 'QuizController@getResults')->name('join-room');

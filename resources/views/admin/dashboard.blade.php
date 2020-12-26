@@ -12,12 +12,10 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label for="quizDir"
-                                       class="col-md-4 col-form-label text-md-right">Quiz Directory</label>
+                                <label for="quizDir" class="col-md-4 col-form-label text-md-right">Quiz Directory</label>
 
                                 <div class="col-md-6">
-                                    <input id="quizDir" type="text"
-                                           class="form-control @error('quizDir') is-invalid @enderror"
+                                    <input id="quizDir" type="text" class="form-control @error('quizDir') is-invalid @enderror"
                                            name="quizDir" value="{{ old('quizDir') }}" required autofocus>
 
                                     @error('quizDir')

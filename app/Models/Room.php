@@ -22,4 +22,9 @@ class Room extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

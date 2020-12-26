@@ -10,9 +10,15 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
-        'roomId',
-        'questionType',
-        'question'
+        'room_id',
+        'type',
+        'question',
+        'options'
     ];
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 
 }

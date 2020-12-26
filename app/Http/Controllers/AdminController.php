@@ -35,14 +35,23 @@ class AdminController extends Controller
      */
     public function roomDashboard(Room $room)
     {
-        Log::info(print_r($room, true));
-        return view('admin.session', ['room' => $room]);
+        $files = glob($room->path.'/*.json');
+
+        // If there is no quiz json, destroy the room and return to admin dashboard
+        if(empty($files)) {
+            Room::destroy($room->id);
+            return redirect('admin');
+        }
+
+        $filename = $files[0];
+        $quizJson = file_get_contents($filename);
+        $quizArray = json_decode($quizJson, true);
+
+        return view('admin.session', ['room' => $room, 'quizArray' => $quizArray]);
     }
 
     public static function nextQuestion()
     {
         $question = Question::create(['roomId' => '123', 'questionType' => 'multi', 'question' => 'What\'s my name']);
-//        NewQuestion::dispatch($question);
-        event(new NewQuestion($question));
     }
 }

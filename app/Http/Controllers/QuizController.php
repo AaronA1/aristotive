@@ -9,24 +9,9 @@ use Illuminate\Support\Facades\Log;
 class QuizController
 {
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Room  $room
-     * @return \Illuminate\Http\Response
-     */
-    public function showRoomDashboard(Room $room)
-    {
-        $jsonFile = glob(base_path().'/quizzes/'.$room->path.'/*.{json}');
-        $quizJson = file_get_contents(base_path().'/quizzes/'.$room->path.'/test.json');
-        $quizArray = json_decode($quizJson, true);
-
-        return response(view('admin.room.dashboard', ['room' => $room]));
-    }
-
     public function initialise($number)
     {
-        $quizJson = file_get_contents(base_path().'/quizzes/example'.$number.'/test.json');
+        $quizJson = file_get_contents(base_path().'/quizzes/example'.$number.'/quiz.json');
         $quizArray = json_decode($quizJson, true);
 
         return view('quiz', array('quizArray' => $quizArray));
@@ -38,7 +23,7 @@ class QuizController
         $quizNumber = $request->all()[0];
         $quizAnswers = $request->all()[1];
 
-        $quizJson = file_get_contents(base_path().'/quizzes/example'.$quizNumber.'/test.json');
+        $quizJson = file_get_contents(base_path().'/quizzes/example'.$quizNumber.'/quiz.json');
         $quizArray = json_decode($quizJson, true);
 
         $resultsArray = [];

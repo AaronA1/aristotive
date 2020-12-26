@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
+use App\Models\Room;
 use Illuminate\Contracts\Validation\Rule;
 
-class QuizDirExists implements Rule
+class RoomExists implements Rule
 {
     /**
      * Create a new rule instance.
@@ -25,8 +26,7 @@ class QuizDirExists implements Rule
      */
     public function passes($attribute, $value)
     {
-        $fullPath = base_path().'/quizzes/'.$value;
-        return file_exists($fullPath) && is_dir($fullPath);
+        return Room::find($value);
     }
 
     /**
@@ -36,6 +36,6 @@ class QuizDirExists implements Rule
      */
     public function message()
     {
-        return 'This is not a valid directory';
+        return 'This room does not exist';
     }
 }
