@@ -2,13 +2,10 @@
 This is a web-based Student Response System
 allowing for the making of bespoke quizzes (to also include multiple question types)
 
-To run the app first run `npm run dev` then `php artisan serve`
-If npm is not installed, either install it or run the app within a docker container using the build script (first time)
+To run the app you must run it within a docker container using the build script (first time)
 ```
 ./docker_build.sh
 ```
-
-This app runs operates a database so quizzes and results are read from and written to files.
 
 ## Building a quiz
 You should build your quizzes into .json files using valid syntax.
@@ -20,16 +17,20 @@ Currently supported question types:
 
 Future supported question types:
 - Multiple choice (one or more)
-- Short answer (numbers)
-- Short answer (words)
+- Input answer
 - Order the options
 
-Currently the naming conventions for quiz directories are as follows:
-'example(#number)' with a 'test.json' inside
+There must only be one .json file per directory.
 
-Directory and file naming will be more flexible once a better approach is resolved in future
+## Starting a Quiz
+To start a quiz room, log into the admin account using the following details:
 
+`username: admin`
+
+`password: password`
+
+From here you can simply use the admin dashboard to enter the required quiz directory and start the room.
+A unique Room ID will be generated to provide to students to join.
 
 ## Taking a Quiz
-To take a quiz, simple proceed to '/quiz/#' where # is the number of the directory.
-For instance, the example quiz can be taken at '/quiz/1'
+To join a quiz room, simply enter the Room ID on the login page.

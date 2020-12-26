@@ -12,16 +12,16 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label for="email"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                                <label for="username"
+                                       class="col-md-4 col-form-label text-md-right">Username</label>
 
                                 <div class="col-md-6">
-                                    <input id="email" type="email"
-                                           class="form-control @error('email') is-invalid @enderror"
-                                           name="email" value="{{ old('email') }}" required autocomplete="email"
+                                    <input id="username" type="text"
+                                           class="form-control @error('username') is-invalid @enderror"
+                                           name="username" value="{{ old('username') }}" required autocomplete="username"
                                            autofocus>
 
-                                    @error('email')
+                                    @error('username')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -61,15 +61,15 @@
                     <div class="card-header">Audience Login</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('join-room') }}">
+                        <form method="POST" action="{{ route('joinRoom') }}">
                             @csrf
 
                             <div class="form-group row">
                                 <label for="roomId" class="col-md-4 col-form-label text-md-right">Room ID</label>
 
                                 <div class="col-md-6">
-                                    <input id="roomId" type="text" class="form-control" name="roomId" required
-                                           autofocus>
+                                    <input id="roomId" type="text" class="form-control @error('roomId') is-invalid @enderror"
+                                           name="roomId" required autofocus>
 
                                     @error('roomId')
                                     <span class="invalid-feedback" role="alert">

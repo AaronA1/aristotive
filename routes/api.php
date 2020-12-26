@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/quiz/question', 'QuizController@postQuestion');
+Route::post('/quiz/response', 'QuizController@postResponse');
+Route::get('/quiz/question', 'QuizController@getQuestion');
+Route::get('/quiz/response', 'QuizController@getResponses');
