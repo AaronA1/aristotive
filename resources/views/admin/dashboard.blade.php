@@ -43,7 +43,10 @@
 
                     <div class="card-body">
                         @foreach($rooms as $room)
-                        <h1>{{$room->id}}</h1>
+                            <div class="row">
+                                <h1>{{$room->id}}</h1>
+                                <button><a href="{{route('session', $room->id)}}">Enter Room</a></button>
+                            </div>
                         @endforeach
                     </div>
                 </div>

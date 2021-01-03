@@ -6,6 +6,8 @@ use App\Models\Room;
 use App\Rules\QuizDirExists;
 use App\Rules\RoomExists;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -14,7 +16,7 @@ class RoomController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -44,8 +46,8 @@ class RoomController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Room  $room
-     * @return \Illuminate\Http\Response
+     * @param Room $room
+     * @return Response|Redirector
      */
     public function show(Room $room)
     {
@@ -65,11 +67,12 @@ class RoomController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Room  $room
-     * @return \Illuminate\Http\Response
+     * @param Room $room
+     * @return Response
      */
     public function destroy(Room $room)
     {
-        //
+        Room::destroy($room->id);
+        return response(view('login'));
     }
 }

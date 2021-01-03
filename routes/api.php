@@ -20,5 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/quiz/question', 'QuizController@postQuestion');
 Route::post('/quiz/response', 'QuizController@postResponse');
-Route::get('/quiz/question', 'QuizController@getQuestion');
+Route::get('/quiz/question/{room}', 'QuizController@getQuestion');
 Route::get('/quiz/response', 'QuizController@getResponses');

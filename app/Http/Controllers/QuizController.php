@@ -2,40 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
 use App\Models\Room;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class QuizController
 {
 
-    public function initialise($number)
+    /**
+     * Fetch current active question for the given quiz via API
+     *
+     * @param Room $room
+     * @return ResponseFactory
+     */
+    public function getQuestion(Room $room)
     {
-        $quizJson = file_get_contents(base_path().'/quizzes/example'.$number.'/quiz.json');
-        $quizArray = json_decode($quizJson, true);
+        $activeQ = Question::where([
+            ['room_id', $room->id],
+            ['active', true]
+        ])->first();
 
-        return view('quiz', array('quizArray' => $quizArray));
+        return response($activeQ, 200);
     }
 
-    public function getResults(Request $request)
+    /**
+     * Fetch question responses for the given quiz via API
+     *
+     * @param Room $room
+     * @return ResponseFactory
+     */
+    public function getResponses(Room $room)
     {
+        $activeQ = Question::where([
+            ['room_id', $room->id],
+            ['active', true]
+        ])->first();
 
-        $quizNumber = $request->all()[0];
-        $quizAnswers = $request->all()[1];
+        $responses = $activeQ->responses()->get();
 
-        $quizJson = file_get_contents(base_path().'/quizzes/example'.$quizNumber.'/quiz.json');
-        $quizArray = json_decode($quizJson, true);
+        return response($responses, 200);
+    }
 
-        $resultsArray = [];
+    /**
+     * Post a new active question for the given quiz via API
+     *
+     * @param Request $request
+     * @return ResponseFactory
+     */
+    public function postQuestion(Request $request)
+    {
+        return response('', 200);
+    }
 
-        foreach ($quizArray['questions'] as $questions) {
-            $resultsArray[] = $questions['answer'];
-        }
-
-        $diff = array_diff($resultsArray, $quizAnswers);
-        $numIncorrect = count($diff);
-
-        return response($numIncorrect, 200);
+    /**
+     * Post a response for the given question via API
+     *
+     * @param Request $request
+     * @return ResponseFactory
+     */
+    public function postResponse(Request $request)
+    {
+        return response('', 200);
     }
 
 }

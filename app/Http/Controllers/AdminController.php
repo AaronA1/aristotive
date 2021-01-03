@@ -45,13 +45,9 @@ class AdminController extends Controller
 
         $filename = $files[0];
         $quizJson = file_get_contents($filename);
-        $quizArray = json_decode($quizJson, true);
+        $questions = json_decode($quizJson, true)['questions'];
+        Log::info(print_r($questions, true));
 
-        return view('admin.session', ['room' => $room, 'quizArray' => $quizArray]);
-    }
-
-    public static function nextQuestion()
-    {
-        $question = Question::create(['roomId' => '123', 'questionType' => 'multi', 'question' => 'What\'s my name']);
+        return view('admin.session', ['room' => $room, 'questions' => $questions]);
     }
 }

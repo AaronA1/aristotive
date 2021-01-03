@@ -21,4 +21,9 @@ class Question extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+
 }

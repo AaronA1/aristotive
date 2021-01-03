@@ -27,6 +27,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.component('quiz', require('./components/Quiz').default);
 Vue.component('question-card', require('./components/QuestionCard').default);
+Vue.component('admin-panel', require('./components/AdminPanel').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
