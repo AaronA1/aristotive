@@ -6,6 +6,7 @@ use App\Models\Question;
 use App\Models\Room;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class QuizController
 {
@@ -20,10 +21,12 @@ class QuizController
     {
         $activeQ = Question::where([
             ['room_id', $room->id],
-            ['active', true]
-        ])->first();
+        ])->latest()->first();
 
-        return response($activeQ, 200);
+        // Decode options back into array
+        $activeQ->options = json_decode($activeQ['options']);
+
+        return response($activeQ);
     }
 
     /**
@@ -36,12 +39,12 @@ class QuizController
     {
         $activeQ = Question::where([
             ['room_id', $room->id],
-            ['active', true]
+//            ['active', true]
         ])->first();
 
         $responses = $activeQ->responses()->get();
 
-        return response($responses, 200);
+        return response($responses);
     }
 
     /**
@@ -52,7 +55,25 @@ class QuizController
      */
     public function postQuestion(Request $request)
     {
-        return response('', 200);
+        $room = Room::find($request['roomId']);
+
+        $room->current_question = $request['questionIndex'];
+        $room->save();
+
+        $options = $request['question']['options'] ?? null;
+        if ($options) {
+            $options = json_encode($request['question']['options']);
+        }
+
+        $question = Question::create([
+            'room_id' => $request['roomId'],
+            'type' => $request['question']['type'],
+            'question' => $request['question']['question'],
+            'options' => $options ?? null,
+            'image_path' => $request['question']['photo'] ?? null
+        ]);
+
+        return response('Success');
     }
 
     /**
@@ -63,7 +84,7 @@ class QuizController
      */
     public function postResponse(Request $request)
     {
-        return response('', 200);
+        return response('Success');
     }
 
 }

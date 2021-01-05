@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-        <div class="question-box-container">
+        <div class="question-box-container" v-if="active">
             <b-jumbotron>
                 <template slot="lead">
-                    This is the question
+                    {{currentQuestion.question}}
                 </template>
                 <b-list-group>
                     <b-list-group-item v-for="response in responses" :key="response.response">
@@ -18,6 +18,13 @@
                 </b-list-group>
             </b-jumbotron>
         </div>
+        <div v-else>
+            <b-card bg-variant="light" header="Begin Quiz?" class="text-center">
+                <b-card-text>There are currently {{members}} members in the room.</b-card-text>
+                <b-card-text>Press the button below to begin</b-card-text>
+                <b-button variant="primary" v-on:click="beginQuiz">Begin Quiz</b-button>
+            </b-card>
+        </div>
     </div>
 </template>
 
@@ -28,9 +35,17 @@ export default {
         return {
             responses: [],
             questionIndex: 0,
+            questionsObj: null,
+            active: false,
+            members: 2,
         }
     },
     methods: {
+        beginQuiz() {
+            this.active = true;
+            this.postQuestion();
+            // setInterval(this.fetchResponses, 2000);
+        },
         fetchResponses() {
             axios.get('/api/quiz/response/'+this.roomid).then(response => {
                 this.responses = response.data;
@@ -39,12 +54,31 @@ export default {
             });
         },
         nextQuestion() {
-            axios.post('/api/quiz/question')
+            this.responses = [];
+            this.questionIndex++;
+            this.postQuestion();
+        },
+        postQuestion() {
+            axios.post('/api/quiz/question', {
+                roomId: this.roomid,
+                questionIndex: this.questionIndex,
+                question: this.currentQuestion
+            }).then(response => {
+                console.log(response);
+            }).catch(error => {
+                console.log(error);
+            });
         }
     },
-    mounted() {
-        setInterval(this.fetchResponses, 2000);
-    }
+    computed: {
+        currentQuestion: function() {
+            return this.questionsObj[this.questionIndex];
+        }
+    },
+    created() {
+        let questions = JSON.parse(this.questions);
+        this.questionsObj = questions.questions;
+    },
 }
 </script>
 

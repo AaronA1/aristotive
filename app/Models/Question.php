@@ -13,7 +13,8 @@ class Question extends Model
         'room_id',
         'type',
         'question',
-        'options'
+        'options',
+        'image_path'
     ];
 
     public function room()

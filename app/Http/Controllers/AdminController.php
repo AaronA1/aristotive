@@ -44,10 +44,9 @@ class AdminController extends Controller
         }
 
         $filename = $files[0];
-        $quizJson = file_get_contents($filename);
-        $questions = json_decode($quizJson, true)['questions'];
-        Log::info(print_r($questions, true));
+        $questionsJson = file_get_contents($filename);
+        // Pass json directly into Vue component instead of decoding and re-encoding
 
-        return view('admin.session', ['room' => $room, 'questions' => $questions]);
+        return view('admin.session', ['room' => $room, 'questions' => $questionsJson]);
     }
 }

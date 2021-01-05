@@ -38,7 +38,6 @@ class RoomController extends Controller
 
         $roomId = Str::random(6);
         $room = Room::create(['id' => $roomId, 'path' => $fullPath]);
-//        Log::info(print_r($room, true));
 
         return redirect()->route('session', $room);
     }

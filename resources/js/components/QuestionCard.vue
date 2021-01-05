@@ -7,6 +7,7 @@
 
             <hr class="my-4" />
 
+            <div v-if="questionType === 'multi-choice'">
             <b-list-group>
                 <b-list-group-item
                     v-for="(option) in question.options"
@@ -17,12 +18,18 @@
                     {{ option }}
                 </b-list-group-item>
             </b-list-group>
-            <b-button v-if="this.localIndex < length" v-on:click="$emit('next-question', selectedAnswer); nextQuestion()" variant="success">
-                Next
-            </b-button>
-            <b-button v-else v-on:click="$emit('complete-quiz', selectedAnswer)" variant="success">
-                Finish
-            </b-button>
+                <b-button v-on:click="$emit('submit', selectedAnswer)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'input'">
+                <div id="inputBox">
+                <b-form-input v-model="input"></b-form-input>
+                </div>
+                <b-button v-on:click="$emit('submit', input)" variant="success">
+                    Submit
+                </b-button>
+            </div>
         </b-jumbotron>
     </div>
 </template>
@@ -30,12 +37,11 @@
 <script>
 import _ from 'lodash'
 export default {
-    props: ['question', 'length'],
+    props: ['question'],
     data: function() {
         return {
             selectedAnswer: null,
-            shuffledOptions: [],
-            localIndex: 1,
+            input: null,
         }
     },
     methods: {
@@ -54,11 +60,10 @@ export default {
             }
             return answerClass
         },
-        nextQuestion() {
-            if(this.selectedAnswer !== null) {
-                this.localIndex++
-                console.log(this.localIndex);
-            }
+    },
+    computed: {
+        questionType: function () {
+            return this.question.type;
         }
     }
 }
@@ -66,7 +71,7 @@ export default {
 
 <style scoped>
 .list-group {
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 .list-group-item:hover {
     background: #EEE;
@@ -77,5 +82,8 @@ export default {
 }
 .selected {
     background-color: lightblue;
+}
+#inputBox {
+    padding-bottom: 40px;
 }
 </style>

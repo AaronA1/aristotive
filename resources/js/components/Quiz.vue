@@ -1,31 +1,24 @@
 <template>
-    <div id="quiz" v-if="this.completed === false">
-        <b-container class="bv-example-row">
-            <b-row>
-                <b-col sm="12" offset="0">
-                    <question-card
-                        v-if="questionsObject.length"
-                        :question="questionsObject[index]"
-                        :length="questionsObject.length"
-                        v-on:next-question="next"
-                        v-on:complete-quiz="completeQuiz">
-                    </question-card>
-                </b-col>
-            </b-row>
-        </b-container>
-    </div>
-    <div id="results" v-else="">
+    <div id="loading" v-if="this.loading">
         <b-container class="bv-example-row">
             <b-row>
                 <b-col sm="12" offset="0">
                     <b-jumbotron>
-                        <template slot="lead">
-                            Results
-                        </template>
-
-                        <hr class="my-4" />
-                        You got {{this.correct}}/{{questionsObject.length}} correct!
+                        <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
+                        Waiting on the next question
                     </b-jumbotron>
+                </b-col>
+            </b-row>
+        </b-container>
+    </div>
+    <div id="quiz" v-else>
+        <b-container class="bv-example-row">
+            <b-row>
+                <b-col sm="12" offset="0">
+                    <question-card
+                        :question="question"
+                        v-on:submit="submitAnswer">
+                    </question-card>
                 </b-col>
             </b-row>
         </b-container>
@@ -35,46 +28,36 @@
 <script>
 export default {
     name: 'Quiz',
-    props: ['questions'],
+    props: ['roomid'],
     data() {
         return {
-            index: 0,
-            questionsObject: null,
-            answers: [],
-            completed: false,
-            incorrect: 0,
+            loading: false,
+            question: [],
         }
     },
     methods: {
-        next (answer) {
+        submitAnswer (answer) {
             if(answer === null) {
                 return;
             }
-            if(this.index !== this.questionsObject.length-1) {
-                this.answers.push(answer)
-                this.index++;
-            }
+            axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
+                this.loading = true;
+            }).catch(error => {
+                console.log(error);
+            });
         },
-        completeQuiz(answer) {
-            if(answer === null) {
-                return;
-            }
-            this.answers.push(answer);
-            axios.post('/quiz/results', [location.pathname.split('/').pop(), this.answers]).then(response => {
-                this.completed = true;
-                this.incorrect = response.data;
+        fetchQuestion() {
+            axios.get('/api/quiz/question/'+this.roomid).then(response => {
+                this.question = response.data;
+                this.loading = false;
             }).catch(error => {
                 console.log(error);
             });
         }
     },
-    computed: {
-        correct: function() {
-            return this.questionsObject.length-this.incorrect;
-        }
-    },
-    created() {
-        this.questionsObject = JSON.parse(this.questions);
+    mounted() {
+        this.fetchQuestion();
+        // setInterval(this.fetchQuestion, 5000);
     }
 }
 </script>

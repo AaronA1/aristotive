@@ -1,14 +1,24 @@
 {
     "questions": [
         {
+            "type": "input",
+            "question": "Write a javascript function to log 'Hello' to the console"
+        },
+        {
             "type": "multi-choice",
             "question": "What is 2 x 2?",
-            "options": ["1", "2", "3", "4"]
+            "options": ["1", "2", "3", "4"],
+            "photo": "testphoto.png"
         },
         {
             "type": "multi-choice",
             "question": "What is the word 'coding' an example of?",
             "options": ["Adjective", "Adverb", "Verb", "Noun"]
+        },
+        {
+            "type": "order",
+            "question": "Order these from smallest to largest",
+            "options": ["100", "300", "40", "150"]
         },
         {
             "type": "multi-choice",
