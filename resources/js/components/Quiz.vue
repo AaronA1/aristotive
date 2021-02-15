@@ -1,21 +1,13 @@
 <template>
-    <div id="loading" v-if="this.loading">
+    <div id="content">
         <b-container class="bv-example-row">
             <b-row>
                 <b-col sm="12" offset="0">
-                    <b-jumbotron>
-                        <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
-                        Waiting on the next question
+                    <b-jumbotron v-if="this.loading">
+                        <b-spinner style="width: 4rem; height: 4rem;" label="Large Spinner"></b-spinner>
+                        <h3>Waiting on the next question</h3>
                     </b-jumbotron>
-                </b-col>
-            </b-row>
-        </b-container>
-    </div>
-    <div id="quiz" v-else>
-        <b-container class="bv-example-row">
-            <b-row>
-                <b-col sm="12" offset="0">
-                    <question-card
+                    <question-card v-else
                         :question="question"
                         v-on:submit="submitAnswer">
                     </question-card>
@@ -26,12 +18,14 @@
 </template>
 
 <script>
+import _ from "lodash";
+
 export default {
     name: 'Quiz',
     props: ['roomid'],
     data() {
         return {
-            loading: false,
+            loading: true,
             question: [],
         }
     },
@@ -40,7 +34,10 @@ export default {
             if(answer === null) {
                 return;
             }
+            console.log(answer);
+            console.log(this.question.id);
             axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
+                console.log(response);
                 this.loading = true;
             }).catch(error => {
                 console.log(error);
@@ -48,14 +45,19 @@ export default {
         },
         fetchQuestion() {
             axios.get('/api/quiz/question/'+this.roomid).then(response => {
+                // Shuffle the multiple choice options
+                response.data.options = this.shuffleOptions(response.data.options)
                 this.question = response.data;
                 this.loading = false;
             }).catch(error => {
                 console.log(error);
             });
-        }
+        },
+        shuffleOptions(options) {
+            return _.shuffle(options);
+        },
     },
-    mounted() {
+    created() {
         this.fetchQuestion();
         // setInterval(this.fetchQuestion, 5000);
     }
@@ -63,7 +65,7 @@ export default {
 </script>
 
 <style>
-#quiz {
+#content {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

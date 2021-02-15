@@ -20,7 +20,7 @@
         </div>
         <div v-else>
             <b-card bg-variant="light" header="Begin Quiz?" class="text-center">
-                <b-card-text>There are currently {{members}} members in the room.</b-card-text>
+                <b-card-text>There are currently {{members}} people in the room.</b-card-text>
                 <b-card-text>Press the button below to begin</b-card-text>
                 <b-button variant="primary" v-on:click="beginQuiz">Begin Quiz</b-button>
             </b-card>
@@ -30,12 +30,13 @@
 
 <script>
 export default {
-    props: ['roomid', 'questions'],
+    props: ['room', 'questions'],
     data() {
         return {
             responses: [],
             questionIndex: 0,
             questionsObj: null,
+            roomObj: null,
             active: false,
             members: 2,
         }
@@ -44,10 +45,10 @@ export default {
         beginQuiz() {
             this.active = true;
             this.postQuestion();
-            // setInterval(this.fetchResponses, 2000);
+            setInterval(this.fetchResponses, 2000);
         },
         fetchResponses() {
-            axios.get('/api/quiz/response/'+this.roomid).then(response => {
+            axios.get('/api/quiz/response/'+this.roomObj.id).then(response => {
                 this.responses = response.data;
             }).catch(error => {
                 console.log(error);
@@ -60,7 +61,7 @@ export default {
         },
         postQuestion() {
             axios.post('/api/quiz/question', {
-                roomId: this.roomid,
+                roomId: this.roomObj.id,
                 questionIndex: this.questionIndex,
                 question: this.currentQuestion
             }).then(response => {
@@ -78,6 +79,7 @@ export default {
     created() {
         let questions = JSON.parse(this.questions);
         this.questionsObj = questions.questions;
+        this.roomObj = JSON.parse(this.room);
     },
 }
 </script>

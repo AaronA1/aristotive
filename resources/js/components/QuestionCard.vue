@@ -4,29 +4,49 @@
             <template slot="lead">
                 {{ question.question }}
             </template>
+            <img v-if="question.image" v-bind:src="'/testphoto.png'" alt="image here" width="200px" height="100px">
 
-            <hr class="my-4" />
+            <hr class="my-4"/>
 
             <div v-if="questionType === 'multi-choice'">
-            <b-list-group>
-                <b-list-group-item
-                    v-for="(option) in question.options"
-                    :key="option"
-                    @click.prevent="selectAnswer(option)"
-                    :class="answerClass(option)"
-                >
-                    {{ option }}
-                </b-list-group-item>
-            </b-list-group>
+                <b-list-group>
+                    <b-list-group-item
+                        v-for="(option) in question.options"
+                        :key="option"
+                        @click.prevent="selectAnswer(option)"
+                        :class="answerClass(option)"
+                    >
+                        {{ option }}
+                    </b-list-group-item>
+                </b-list-group>
                 <b-button v-on:click="$emit('submit', selectedAnswer)" variant="success">
                     Submit
                 </b-button>
             </div>
             <div v-if="questionType === 'input'">
-                <div id="inputBox">
-                <b-form-input v-model="input"></b-form-input>
-                </div>
+                <b-list-group>
+                    <b-form-input v-model="input"></b-form-input>
+                </b-list-group>
                 <b-button v-on:click="$emit('submit', input)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'sortable'">
+                <draggable class="list-group"
+                           tag="ul"
+                           v-model="question.options"
+                           v-bind="dragOptions"
+                           @start="drag=true"
+                           @end="drag=false">
+                    <transition-group type="transition">
+                        <div class="list-group-item"
+                             v-for="option in question.options"
+                             :key="option">
+                            {{ option }}
+                        </div>
+                    </transition-group>
+                </draggable>
+                <b-button v-on:click="$emit('submit', question.options)" variant="success">
                     Submit
                 </b-button>
             </div>
@@ -35,13 +55,18 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import draggable from 'vuedraggable'
+
 export default {
     props: ['question'],
-    data: function() {
+    components: {
+        draggable,
+    },
+    data: function () {
         return {
             selectedAnswer: null,
             input: null,
+            sortArray: []
         }
     },
     methods: {
@@ -49,21 +74,25 @@ export default {
             this.selectedAnswer = option;
             console.log(this.selectedAnswer);
         },
-        shuffleOptions() {
-            let options = this.question.options
-            this.shuffledOptions = _.shuffle(options)
-        },
         answerClass(option) {
             let answerClass = ''
             if (this.selectedAnswer === option) {
                 answerClass = 'selected'
             }
             return answerClass
-        },
+        }
     },
     computed: {
         questionType: function () {
             return this.question.type;
+        },
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
         }
     }
 }
@@ -83,7 +112,8 @@ export default {
 .selected {
     background-color: lightblue;
 }
-#inputBox {
-    padding-bottom: 40px;
+.ghost {
+    opacity: 0.5;
+    background: #c8ebfb;
 }
 </style>

@@ -14,11 +14,13 @@ In the directory currently there should be a skeleton example as a reference to 
 
 Currently supported question types:
 - Multiple choice (one answer)
-
-Future supported question types:
-- Multiple choice (one or more)
 - Input answer
 - Order the options
+
+Future supported question types:
+- True/False
+- Multiple choice (multi-answer)
+- Image-based questions
 
 There must only be one .json file per directory.
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Response;
 use App\Models\Room;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class QuizController
             'type' => $request['question']['type'],
             'question' => $request['question']['question'],
             'options' => $options ?? null,
-            'image_path' => $request['question']['photo'] ?? null
+            'image' => $request['question']['image'] ?? null
         ]);
 
         return response('Success');
@@ -84,6 +85,10 @@ class QuizController
      */
     public function postResponse(Request $request)
     {
+        $response = Response::create([
+            'question_id' => $request['questionId'],
+            'response' => $request['answer']
+        ]);
         return response('Success');
     }
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <admin-panel roomid="{{$room->id}}" questions="{{$questions}}"></admin-panel>
+    <admin-panel room="{{$room}}" questions="{{$questions}}"></admin-panel>
 @endsection

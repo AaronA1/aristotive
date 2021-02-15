@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use App\Rules\QuizDirExists;
 use App\Rules\RoomExists;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
@@ -67,11 +70,12 @@ class RoomController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Room $room
-     * @return Response
+     * @return Application|Factory|View
      */
     public function destroy(Room $room)
     {
+        Log::info('Reach here');
         Room::destroy($room->id);
-        return response(view('login'));
+        return redirect(route('dashboard'));
     }
 }

@@ -13,6 +13,7 @@ class Response extends Model
         'question_id',
         'response'
     ];
+    public $timestamps = false;
 
     public function question()
     {
