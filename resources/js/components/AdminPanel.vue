@@ -7,7 +7,7 @@
                 </template>
                 <b-list-group>
                     <b-list-group-item v-for="response in responses" :key="response.response">
-                        {{response.response}}
+                        {{response.answer}}
 <!--                        <div class="progress">-->
 <!--                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40"-->
 <!--                                 aria-valuemin="0" aria-valuemax="100" style="width:40%">-->
@@ -16,9 +16,15 @@
 <!--                        </div>-->
                     </b-list-group-item>
                 </b-list-group>
+                <b-button v-on:click="nextQuestion" variant="success">
+                    Next Question
+                </b-button>
             </b-jumbotron>
         </div>
         <div v-else>
+            <b-jumbotron>
+                <h3>Room ID: {{roomObj.id}}</h3>
+            </b-jumbotron>
             <b-card bg-variant="light" header="Begin Quiz?" class="text-center">
                 <b-card-text>There are currently {{members}} people in the room.</b-card-text>
                 <b-card-text>Press the button below to begin</b-card-text>
@@ -62,7 +68,6 @@ export default {
         postQuestion() {
             axios.post('/api/quiz/question', {
                 roomId: this.roomObj.id,
-                questionIndex: this.questionIndex,
                 question: this.currentQuestion
             }).then(response => {
                 console.log(response);

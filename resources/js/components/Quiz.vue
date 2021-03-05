@@ -34,10 +34,7 @@ export default {
             if(answer === null) {
                 return;
             }
-            console.log(answer);
-            console.log(this.question.id);
             axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
-                console.log(response);
                 this.loading = true;
             }).catch(error => {
                 console.log(error);
@@ -45,10 +42,16 @@ export default {
         },
         fetchQuestion() {
             axios.get('/api/quiz/question/'+this.roomid).then(response => {
-                // Shuffle the multiple choice options
-                response.data.options = this.shuffleOptions(response.data.options)
-                this.question = response.data;
-                this.loading = false;
+                if (response.data.question === this.question.question) {
+                    console.log('Already answered')
+                } else {
+                    // Shuffle the multiple choice options
+                    if (response.data.options) {
+                        response.data.options = this.shuffleOptions(response.data.options)
+                    }
+                    this.question = response.data;
+                    this.loading = false;
+                }
             }).catch(error => {
                 console.log(error);
             });
@@ -58,8 +61,8 @@ export default {
         },
     },
     created() {
-        this.fetchQuestion();
-        // setInterval(this.fetchQuestion, 5000);
+        // this.fetchQuestion();
+        setInterval(this.fetchQuestion, 5000);
     }
 }
 </script>

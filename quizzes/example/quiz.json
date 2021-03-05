@@ -1,6 +1,11 @@
 {
     "questions": [
         {
+            "type": "true-false",
+            "question": "This line of code will compile",
+            "image": "testphoto.jpg"
+        },
+        {
             "type": "multi-choice",
             "question": "What is 2 x 2?",
             "options": ["1", "2", "3", "4"]

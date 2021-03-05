@@ -14,7 +14,7 @@ class Question extends Model
         'type',
         'question',
         'options',
-        'image_path'
+        'image'
     ];
 
     public function room()

@@ -4,10 +4,8 @@
             <template slot="lead">
                 {{ question.question }}
             </template>
-            <img v-if="question.image" v-bind:src="'/testphoto.png'" alt="image here" width="200px" height="100px">
-
+            <img v-if="question.image" :src="'/'+question.image" alt="image here" width="200px" height="100px">
             <hr class="my-4"/>
-
             <div v-if="questionType === 'multi-choice'">
                 <b-list-group>
                     <b-list-group-item
@@ -47,6 +45,23 @@
                     </transition-group>
                 </draggable>
                 <b-button v-on:click="$emit('submit', question.options)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'true-false'">
+                <b-list-group>
+                    <b-list-group-item
+                        :key="'True'"
+                        @click.prevent="selectAnswer('True')"
+                        :class="answerClass('True')"
+                    >True</b-list-group-item>
+                    <b-list-group-item
+                        :key="'False'"
+                        @click.prevent="selectAnswer('False')"
+                        :class="answerClass('False')"
+                    >False</b-list-group-item>
+                </b-list-group>
+                <b-button v-on:click="$emit('submit', selectedAnswer)" variant="success">
                     Submit
                 </b-button>
             </div>
