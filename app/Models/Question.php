@@ -13,12 +13,18 @@ class Question extends Model
         'room_id',
         'type',
         'question',
-        'options'
+        'options',
+        'image'
     ];
 
     public function room()
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
     }
 
 }

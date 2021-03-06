@@ -12,10 +12,12 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label for="quizDir" class="col-md-4 col-form-label text-md-right">Quiz Directory</label>
+                                <label for="quizDir" class="col-md-4 col-form-label text-md-right">Quiz
+                                    Directory</label>
 
                                 <div class="col-md-6">
-                                    <input id="quizDir" type="text" class="form-control @error('quizDir') is-invalid @enderror"
+                                    <input id="quizDir" type="text"
+                                           class="form-control @error('quizDir') is-invalid @enderror"
                                            name="quizDir" value="{{ old('quizDir') }}" required autofocus>
 
                                     @error('quizDir')
@@ -43,7 +45,15 @@
 
                     <div class="card-body">
                         @foreach($rooms as $room)
-                        <h1>{{$room->id}}</h1>
+                            <form action="{{ route('room.destroy', $room->id) }}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <h1><a href="{{route('session', $room->id)}}">{{$room->id}}</a></h1>
+                                    <input type="hidden" name="_method" value="DELETE"/>
+                                    <input type="submit" value="Delete" name="Delete" id="btnExc"
+                                           class="btn btn-sm btn-danger"/>
+                                </div>
+                            </form>
                         @endforeach
                     </div>
                 </div>

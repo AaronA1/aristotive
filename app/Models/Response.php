@@ -11,8 +11,9 @@ class Response extends Model
 
     protected $fillable = [
         'question_id',
-        'response'
+        'answer'
     ];
+    public $timestamps = false;
 
     public function question()
     {

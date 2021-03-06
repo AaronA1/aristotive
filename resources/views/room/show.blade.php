@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{$room->id}}</h1>
+    <quiz roomid="{{$room->id}}"></quiz>
 @endsection

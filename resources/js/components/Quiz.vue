@@ -1,31 +1,16 @@
 <template>
-    <div id="quiz" v-if="this.completed === false">
+    <div id="content">
         <b-container class="bv-example-row">
             <b-row>
                 <b-col sm="12" offset="0">
-                    <question-card
-                        v-if="questionsObject.length"
-                        :question="questionsObject[index]"
-                        :length="questionsObject.length"
-                        v-on:next-question="next"
-                        v-on:complete-quiz="completeQuiz">
-                    </question-card>
-                </b-col>
-            </b-row>
-        </b-container>
-    </div>
-    <div id="results" v-else="">
-        <b-container class="bv-example-row">
-            <b-row>
-                <b-col sm="12" offset="0">
-                    <b-jumbotron>
-                        <template slot="lead">
-                            Results
-                        </template>
-
-                        <hr class="my-4" />
-                        You got {{this.correct}}/{{questionsObject.length}} correct!
+                    <b-jumbotron v-if="this.loading">
+                        <b-spinner style="width: 4rem; height: 4rem;" label="Large Spinner"></b-spinner>
+                        <h3>Waiting on the next question</h3>
                     </b-jumbotron>
+                    <question-card v-else
+                        :question="question"
+                        v-on:submit="submitAnswer">
+                    </question-card>
                 </b-col>
             </b-row>
         </b-container>
@@ -33,54 +18,57 @@
 </template>
 
 <script>
+import _ from "lodash";
+
 export default {
     name: 'Quiz',
-    props: ['questions'],
+    props: ['roomid'],
     data() {
         return {
-            index: 0,
-            questionsObject: null,
-            answers: [],
-            completed: false,
-            incorrect: 0,
+            loading: true,
+            question: [],
         }
     },
     methods: {
-        next (answer) {
+        submitAnswer (answer) {
             if(answer === null) {
                 return;
             }
-            if(this.index !== this.questionsObject.length-1) {
-                this.answers.push(answer)
-                this.index++;
-            }
-        },
-        completeQuiz(answer) {
-            if(answer === null) {
-                return;
-            }
-            this.answers.push(answer);
-            axios.post('/quiz/results', [location.pathname.split('/').pop(), this.answers]).then(response => {
-                this.completed = true;
-                this.incorrect = response.data;
+            axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
+                this.loading = true;
             }).catch(error => {
                 console.log(error);
             });
-        }
-    },
-    computed: {
-        correct: function() {
-            return this.questionsObject.length-this.incorrect;
-        }
+        },
+        fetchQuestion() {
+            axios.get('/api/quiz/question/'+this.roomid).then(response => {
+                if (response.data.question === this.question.question) {
+                    console.log('Already answered')
+                } else {
+                    // Shuffle the multiple choice options
+                    if (response.data.options) {
+                        response.data.options = this.shuffleOptions(response.data.options)
+                    }
+                    this.question = response.data;
+                    this.loading = false;
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        shuffleOptions(options) {
+            return _.shuffle(options);
+        },
     },
     created() {
-        this.questionsObject = JSON.parse(this.questions);
+        // this.fetchQuestion();
+        setInterval(this.fetchQuestion, 5000);
     }
 }
 </script>
 
 <style>
-#quiz {
+#content {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

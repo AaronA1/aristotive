@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/welcome', function () {
+    return view('welcome');
+});
 Route::get('/', function () {
     return redirect('login');
 });
@@ -25,15 +28,13 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 /** Admin routes */
-Route::get('/admin', 'AdminController@dashboard')->name('admin');
+Route::get('/admin', 'AdminController@dashboard')->name('dashboard');
 Route::get('/admin/{room}', 'AdminController@roomDashboard')->name('session');
 
-/** Room routes */
-Route::resource('room', 'RoomController')->except(['create', 'edit', 'update']);
-
-/** Quiz Routes */
+/** Room join route */
 Route::post('/quiz', 'RoomController@joinRoom')->name('joinRoom');
 
-/** Old Routes */
-Route::get('/quiz/{number?}', 'QuizController@initialise');
-Route::post('/quiz/results', 'QuizController@getResults')->name('join-room');
+/** Room resource route */
+Route::resource('room', 'RoomController')->except(['create', 'edit', 'update']);
+
+

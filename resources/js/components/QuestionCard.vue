@@ -4,38 +4,84 @@
             <template slot="lead">
                 {{ question.question }}
             </template>
-
-            <hr class="my-4" />
-
-            <b-list-group>
-                <b-list-group-item
-                    v-for="(option) in question.options"
-                    :key="option"
-                    @click.prevent="selectAnswer(option)"
-                    :class="answerClass(option)"
-                >
-                    {{ option }}
-                </b-list-group-item>
-            </b-list-group>
-            <b-button v-if="this.localIndex < length" v-on:click="$emit('next-question', selectedAnswer); nextQuestion()" variant="success">
-                Next
-            </b-button>
-            <b-button v-else v-on:click="$emit('complete-quiz', selectedAnswer)" variant="success">
-                Finish
-            </b-button>
+            <img v-if="question.image" :src="'/'+question.image" alt="image here" width="200px" height="100px">
+            <hr class="my-4"/>
+            <div v-if="questionType === 'multi-choice'">
+                <b-list-group>
+                    <b-list-group-item
+                        v-for="(option) in question.options"
+                        :key="option"
+                        @click.prevent="selectAnswer(option)"
+                        :class="answerClass(option)"
+                    >
+                        {{ option }}
+                    </b-list-group-item>
+                </b-list-group>
+                <b-button v-on:click="$emit('submit', selectedAnswer)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'input'">
+                <b-list-group>
+                    <b-form-input v-model="input"></b-form-input>
+                </b-list-group>
+                <b-button v-on:click="$emit('submit', input)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'sortable'">
+                <draggable class="list-group"
+                           tag="ul"
+                           v-model="question.options"
+                           v-bind="dragOptions"
+                           @start="drag=true"
+                           @end="drag=false">
+                    <transition-group type="transition">
+                        <div class="list-group-item"
+                             v-for="option in question.options"
+                             :key="option">
+                            {{ option }}
+                        </div>
+                    </transition-group>
+                </draggable>
+                <b-button v-on:click="$emit('submit', question.options)" variant="success">
+                    Submit
+                </b-button>
+            </div>
+            <div v-if="questionType === 'true-false'">
+                <b-list-group>
+                    <b-list-group-item
+                        :key="'True'"
+                        @click.prevent="selectAnswer('True')"
+                        :class="answerClass('True')"
+                    >True</b-list-group-item>
+                    <b-list-group-item
+                        :key="'False'"
+                        @click.prevent="selectAnswer('False')"
+                        :class="answerClass('False')"
+                    >False</b-list-group-item>
+                </b-list-group>
+                <b-button v-on:click="$emit('submit', selectedAnswer)" variant="success">
+                    Submit
+                </b-button>
+            </div>
         </b-jumbotron>
     </div>
 </template>
 
 <script>
-import _ from 'lodash'
+import draggable from 'vuedraggable'
+
 export default {
-    props: ['question', 'length'],
-    data: function() {
+    props: ['question'],
+    components: {
+        draggable,
+    },
+    data: function () {
         return {
             selectedAnswer: null,
-            shuffledOptions: [],
-            localIndex: 1,
+            input: null,
+            sortArray: []
         }
     },
     methods: {
@@ -43,22 +89,25 @@ export default {
             this.selectedAnswer = option;
             console.log(this.selectedAnswer);
         },
-        shuffleOptions() {
-            let options = this.question.options
-            this.shuffledOptions = _.shuffle(options)
-        },
         answerClass(option) {
             let answerClass = ''
             if (this.selectedAnswer === option) {
                 answerClass = 'selected'
             }
             return answerClass
+        }
+    },
+    computed: {
+        questionType: function () {
+            return this.question.type;
         },
-        nextQuestion() {
-            if(this.selectedAnswer !== null) {
-                this.localIndex++
-                console.log(this.localIndex);
-            }
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
         }
     }
 }
@@ -66,7 +115,7 @@ export default {
 
 <style scoped>
 .list-group {
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 .list-group-item:hover {
     background: #EEE;
@@ -77,5 +126,9 @@ export default {
 }
 .selected {
     background-color: lightblue;
+}
+.ghost {
+    opacity: 0.5;
+    background: #c8ebfb;
 }
 </style>
