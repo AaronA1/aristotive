@@ -4,7 +4,7 @@
             <template slot="lead">
                 {{ question.question }}
             </template>
-            <img v-if="question.image" :src="'/'+question.image" alt="image here" width="200px" height="100px">
+            <img v-if="question.image" :src="'/'+question.image" alt="image" width="400px" height="200px">
             <hr class="my-4"/>
             <div v-if="questionType === 'multi-choice'">
                 <b-list-group>
@@ -98,7 +98,7 @@ export default {
         }
     },
     computed: {
-        questionType: function () {
+        questionType() {
             return this.question.type;
         },
         dragOptions() {
