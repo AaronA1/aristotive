@@ -21,3 +21,5 @@ docker-compose run aristotive-node npm audit fix
 docker-compose run aristotive-node npm run dev
 
 echo "Open the app: http://localhost:8084"
+IP=$(ipconfig getifaddr en0)
+echo "Students can connect via this address: ${IP}:8084"

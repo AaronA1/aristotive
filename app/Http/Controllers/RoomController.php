@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use App\Rules\QuizDirExists;
+use App\Rules\QuizJsonExists;
 use App\Rules\RoomExists;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -34,7 +35,7 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'quizDir' => ['required', 'string', new QuizDirExists],
+            'quizDir' => ['required', 'string', new QuizDirExists, new QuizJsonExists],
         ]);
 
         $fullPath = base_path().'/quizzes/'.$validated['quizDir'];
@@ -71,11 +72,11 @@ class RoomController extends Controller
      *
      * @param Room $room
      * @return Application|Factory|View
+     * @throws \Exception
      */
     public function destroy(Room $room)
     {
-        Log::info('Reach here');
-        Room::destroy($room->id);
+        $room->delete();
         return redirect(route('dashboard'));
     }
 }

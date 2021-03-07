@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Models\Response;
 use App\Models\Room;
+use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -98,6 +99,20 @@ class QuizController
             'answer' => json_encode($request['answer'])
         ]);
         return response('Success');
+    }
+
+    /**
+     * Pull down the current room along with questions and responses
+     *
+     * @param Room $room
+     * @return ResponseFactory|\Illuminate\Http\Response
+     * @throws Exception
+     */
+    public function endQuiz(Room $room)
+    {
+        $room->delete();
+
+        return response("Success");
     }
 
 }

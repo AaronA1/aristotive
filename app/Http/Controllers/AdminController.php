@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewQuestion;
-use App\Models\Question;
 use App\Models\Room;
+use Exception;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -32,16 +33,14 @@ class AdminController extends Controller
      *
      * @param Room $room
      * @return Renderable
+     * @throws Exception
      */
     public function roomDashboard(Room $room)
     {
         $files = glob($room->path.'/*.json');
+        $images = glob($room->path.'/*.jpg');
 
-        // If there is no quiz json, destroy the room and return to admin dashboard
-        if(empty($files)) {
-            Room::destroy($room->id);
-            return redirect('admin');
-        }
+        copy($images[0], public_path().'/'.basename($images[0]));
 
         $filename = $files[0];
         $questionsJson = file_get_contents($filename);
