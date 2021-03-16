@@ -2,9 +2,13 @@
 This is a web-based Student Response System
 allowing for the making of bespoke quizzes (to also include multiple question types)
 
-To run the app you must run it within a docker container using the build script (first time)
+To run the app you must run it within a docker container using the build script (only on the first build) on command line
 ```
 ./docker_build.sh
+```
+Subsequent uses will only require upping the container using
+```
+docker-compose up -d
 ```
 
 ## Building a quiz
@@ -13,13 +17,13 @@ These should be then imported into the '/quizzes' directory where they can be re
 In the directory currently there should be a skeleton example as a reference to build your own quizzes.
 
 Currently supported question types:
-- Multiple choice (one answer)
-- Input answer
-- Order the options
+- Multiple choice (single) (multi-choice-single)
+- Input answer (input)
+- Order the options (order)
+- True/False (true-false)
 
 Future supported question types:
-- True/False
-- Multiple choice (multi-answer)
+- Multiple choice (multi) (multi-choice-multi)
 - Image-based questions
 
 There must only be one .json file per directory.

@@ -34,8 +34,8 @@ export default {
             if(answer === null) {
                 return;
             }
+            this.loading = true;
             axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
-                this.loading = true;
             }).catch(error => {
                 console.log(error);
             });
@@ -43,7 +43,7 @@ export default {
         fetchQuestion() {
             axios.get('/api/quiz/question/'+this.roomid).then(response => {
                 if (response.data.question === this.question.question) {
-                    console.log('Already answered')
+
                 } else {
                     // Shuffle the multiple choice options
                     if (response.data.options) {

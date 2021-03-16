@@ -3,33 +3,58 @@
         <div class="question-box-container" v-if="active">
             <b-jumbotron>
                 <template slot="lead">
-                    {{currentQuestion.question}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{currentQuestion.question}}
+                        </div>
+                        <div class="col-md-6" style="text-align: right">
+                            <b-button v-if="lastQuestion" v-on:click="endQuiz" variant="danger">
+                                End Quiz
+                            </b-button>
+                            <b-button v-else v-on:click="nextQuestion" variant="primary">
+                                Next Question
+                            </b-button>
+                        </div>
+                    </div>
                 </template>
-                <b-list-group>
-                    <b-list-group-item v-for="response in responses" :key="response.response">
-                        {{response.answer}}
-<!--                        <div class="progress">-->
-<!--                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40"-->
-<!--                                 aria-valuemin="0" aria-valuemax="100" style="width:40%">-->
-<!--                                40%-->
-<!--                            </div>-->
-<!--                        </div>-->
+                <hr class="my-5"/>
+                <b-list-group v-if="questionType === 'multi-choice'">
+                    <b-list-group-item class="d-flex justify-content-between align-items-center"
+                                       v-for="option in currentQuestion.options"
+                                       :key="option">
+                        {{option}}
+                        <b-badge variant="primary" pill>{{ calculate(option) }}</b-badge>
                     </b-list-group-item>
                 </b-list-group>
-                <b-button v-on:click="nextQuestion" variant="success">
-                    Next Question
-                </b-button>
+                <b-list-group v-else-if="questionType === 'true-false'">
+                    <b-list-group-item variant="primary"
+                                       class="d-flex justify-content-between align-items-center progress-bar"
+                                       v-bind:style="{ width: percentageTrue+'%'}">
+                        True
+                        <b-badge variant="primary" pill>{{ numTrue }}</b-badge>
+                    </b-list-group-item>
+                    <b-list-group-item variant="primary"
+                                       class="d-flex justify-content-between align-items-center progress-bar"
+                                       v-bind:style="{ width: percentageFalse+'%'}">
+                        False
+                        <b-badge variant="primary" pill>{{ numFalse }}</b-badge>
+                    </b-list-group-item>
+                </b-list-group>
+                <b-list-group horizontal="md" style="text-align: center" v-else>
+                    <b-list-group-item v-for="response in responses" :key="response.answer" text>
+                        {{response.answer}}
+                    </b-list-group-item>
+                </b-list-group>
             </b-jumbotron>
         </div>
         <div v-else>
-            <b-jumbotron>
-                <h3>Room ID: {{roomObj.id}}</h3>
-            </b-jumbotron>
-            <b-card bg-variant="light" header="Begin Quiz?" class="text-center">
+            <b-jumbotron style="text-align: center">
+                <h3>Room ID: </h3>
+                <h1>{{roomObj.id}}</h1>
                 <b-card-text>There are currently {{members}} people in the room.</b-card-text>
                 <b-card-text>Press the button below to begin</b-card-text>
-                <b-button variant="primary" v-on:click="beginQuiz">Begin Quiz</b-button>
-            </b-card>
+                <b-button variant="success" v-on:click="beginQuiz">Begin Quiz</b-button>
+            </b-jumbotron>
         </div>
     </div>
 </template>
@@ -49,7 +74,6 @@ export default {
     },
     methods: {
         beginQuiz() {
-            this.active = true;
             this.postQuestion();
             setInterval(this.fetchResponses, 2000);
         },
@@ -70,15 +94,57 @@ export default {
                 roomId: this.roomObj.id,
                 question: this.currentQuestion
             }).then(response => {
-                console.log(response);
+                this.active = true;
             }).catch(error => {
                 console.log(error);
             });
+        },
+        calculate(option) {
+            let count = 0;
+            for (const response of this.responses) {
+                if (response.answer === option)
+                    count++;
+            }
+            return count;
+        },
+        endQuiz() {
+            axios.delete('/api/quiz/'+this.roomObj.id).then(response => {
+                window.location.replace('/admin');
+            })
         }
     },
     computed: {
-        currentQuestion: function() {
+        currentQuestion() {
             return this.questionsObj[this.questionIndex];
+        },
+        lastQuestion() {
+            if (this.questionIndex === this.questionsObj.length-1)
+                return true;
+        },
+        percentageTrue() {
+            return (this.numTrue / this.responses.length) * 100;
+        },
+        percentageFalse() {
+            return (this.numFalse / this.responses.length) * 100;
+        },
+        numTrue() {
+            let count = 0;
+            for (const response of this.responses) {
+                if (response.answer === "True")
+                    count++;
+            }
+            return count;
+        },
+        numFalse() {
+            let count = 0;
+            for (const response of this.responses) {
+                if (response.answer === "False")
+                    count++;
+            }
+            return count;
+        },
+        questionType() {
+            return this.currentQuestion.type;
         }
     },
     created() {
@@ -90,5 +156,13 @@ export default {
 </script>
 
 <style scoped>
-
+* {
+    /*border: 1px solid black;*/
+}
+.container {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    /*text-align: center;*/
+    color: #2c3e50;
+    margin-top: 60px;
+}
 </style>
