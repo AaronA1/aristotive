@@ -108,7 +108,7 @@ export default {
             return count;
         },
         endQuiz() {
-            axios.delete('/api/quiz/'+this.roomObj.id).then(response => {
+            axios.delete('/room/'+this.roomObj.id).then(response => {
                 window.location.replace('/admin');
             })
         }

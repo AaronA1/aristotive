@@ -10,10 +10,8 @@ use App\Rules\RoomExists;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RoomController extends Controller
@@ -26,21 +24,12 @@ class RoomController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Store a newly created resource (Room) in storage.
      *
-     * @return Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'quizDir' => ['required', 'string', new QuizDirExists, new QuizJsonExists],
@@ -55,17 +44,23 @@ class RoomController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified (Room) resource.
      *
      * @param Room $room
      * @return View
      */
-    public function show(Room $room)
+    public function show(Room $room): View
     {
         return view('room.show', ['room' => $room]);
     }
 
-    public function joinRoom(Request $request)
+    /**
+     * Join the room as an audience member with room id in the request
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function join(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'roomId' => ['required', 'string', resolve(RoomExists::class)],
@@ -79,7 +74,6 @@ class RoomController extends Controller
      *
      * @param Room $room
      * @return Application|Factory|View
-     * @throws \Exception
      */
     public function destroy(Room $room)
     {

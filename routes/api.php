@@ -22,4 +22,3 @@ Route::post('/quiz/question', 'QuizController@postQuestion');
 Route::post('/quiz/response', 'QuizController@postResponse');
 Route::get('/quiz/question/{room}', 'QuizController@getQuestion');
 Route::get('/quiz/response/{room}', 'QuizController@getResponses');
-Route::delete('/quiz/{room}', 'QuizController@endQuiz');

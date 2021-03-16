@@ -87,7 +87,6 @@ export default {
     methods: {
         selectAnswer(option) {
             this.selectedAnswer = option;
-            console.log(this.selectedAnswer);
         },
         answerClass(option) {
             let answerClass = ''
