@@ -3,18 +3,22 @@
 namespace App\Rules;
 
 use App\Models\Room;
+use App\Repositories\Room\RoomRepositoryInterface;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Database\Eloquent\Model;
 
 class RoomExists implements Rule
 {
+    private $repo;
+
     /**
      * Create a new rule instance.
      *
-     * @return void
+     * @param RoomRepositoryInterface $repo
      */
-    public function __construct()
+    public function __construct(RoomRepositoryInterface $repo)
     {
-        //
+        $this->repo = $repo;
     }
 
     /**
@@ -22,11 +26,11 @@ class RoomExists implements Rule
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
+     * @return Model|false
      */
     public function passes($attribute, $value)
     {
-        return Room::find($value);
+        return $this->repo->find($value);
     }
 
     /**

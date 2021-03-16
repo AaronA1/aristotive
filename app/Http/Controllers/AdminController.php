@@ -38,9 +38,11 @@ class AdminController extends Controller
     public function roomDashboard(Room $room)
     {
         $files = glob($room->path.'/*.json');
-        $images = glob($room->path.'/*.jpg');
+        $images = glob($room->path.'/*.{jpg,png}');
 
-        copy($images[0], public_path().'/'.basename($images[0]));
+        foreach ($images as $image) {
+            copy($image, public_path().'/'.basename($image));
+        }
 
         $filename = $files[0];
         $questionsJson = file_get_contents($filename);

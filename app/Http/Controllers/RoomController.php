@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
+use App\Repositories\Room\RoomRepositoryInterface;
 use App\Rules\QuizDirExists;
 use App\Rules\QuizJsonExists;
 use App\Rules\RoomExists;
@@ -17,6 +18,13 @@ use Illuminate\Support\Str;
 
 class RoomController extends Controller
 {
+    private $repo;
+
+    public function __construct(RoomRepositoryInterface $repo)
+    {
+        $this->repo = $repo;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -41,7 +49,7 @@ class RoomController extends Controller
         $fullPath = base_path().'/quizzes/'.$validated['quizDir'];
 
         $roomId = Str::random(6);
-        $room = Room::create(['id' => $roomId, 'path' => $fullPath]);
+        $room = $this->repo->create(['id' => $roomId, 'path' => $fullPath]);
 
         return redirect()->route('session', $room);
     }
@@ -50,21 +58,20 @@ class RoomController extends Controller
      * Display the specified resource.
      *
      * @param Room $room
-     * @return Response|Redirector
+     * @return View
      */
     public function show(Room $room)
     {
-        return response(view('room.show', ['room' => $room]));
+        return view('room.show', ['room' => $room]);
     }
 
     public function joinRoom(Request $request)
     {
         $validated = $request->validate([
-            'roomId' => ['required', 'string', new RoomExists],
+            'roomId' => ['required', 'string', resolve(RoomExists::class)],
         ]);
 
         return redirect()->route('room.show', $validated['roomId']);
-
     }
 
     /**
@@ -76,7 +83,7 @@ class RoomController extends Controller
      */
     public function destroy(Room $room)
     {
-        $room->delete();
+        $this->repo->destroy($room->id);
         return redirect(route('dashboard'));
     }
 }
