@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
-use App\Models\Response;
 use App\Models\Room;
+use App\Models\Session;
 use App\Repositories\Question\QuestionRepositoryInterface;
 use App\Repositories\Response\ResponseRepositoryInterface;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class QuizController
 {
@@ -26,7 +27,7 @@ class QuizController
      * Fetch current active question for the given quiz via API
      *
      * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function getQuestion(Room $room)
     {
@@ -48,7 +49,7 @@ class QuizController
      * Fetch question responses for the given quiz via API
      *
      * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function getResponses(Room $room)
     {
@@ -66,7 +67,7 @@ class QuizController
      * Post a new active question for the given quiz via API
      *
      * @param Request $request
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function postQuestion(Request $request)
     {
@@ -95,7 +96,7 @@ class QuizController
      * Post a response for the given question via API
      *
      * @param Request $request
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function postResponse(Request $request)
     {
@@ -107,10 +108,19 @@ class QuizController
     }
 
     /**
+     * Count the number of current sessions for member count
+     * @return Response
+     */
+    public function countSessions(): Response
+    {
+        return response(Session::all());
+    }
+
+    /**
      * Pull down the current room along with questions and responses
      *
      * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      * @throws Exception
      */
     public function endQuiz(Room $room)

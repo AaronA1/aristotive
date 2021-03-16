@@ -51,7 +51,7 @@
             <b-jumbotron style="text-align: center">
                 <h3>Room ID: </h3>
                 <h1>{{roomObj.id}}</h1>
-                <b-card-text>There are currently {{members}} people in the room.</b-card-text>
+                <b-card-text>There are currently {{numMembers}} people in the room.</b-card-text>
                 <b-card-text>Press the button below to begin</b-card-text>
                 <b-button variant="success" v-on:click="beginQuiz">Begin Quiz</b-button>
             </b-jumbotron>
@@ -69,13 +69,20 @@ export default {
             questionsObj: null,
             roomObj: null,
             active: false,
-            members: 2,
+            numMembers: 0,
         }
     },
     methods: {
         beginQuiz() {
             this.postQuestion();
             setInterval(this.fetchResponses, 2000);
+        },
+        countMembers() {
+            axios.get('/api/quiz/session').then(response => {
+                this.numMembers = response.data.length - 1;
+            }).catch(error => {
+                console.log(error);
+            })
         },
         fetchResponses() {
             axios.get('/api/quiz/response/'+this.roomObj.id).then(response => {
@@ -145,12 +152,13 @@ export default {
         },
         questionType() {
             return this.currentQuestion.type;
-        }
+        },
     },
     created() {
         let questions = JSON.parse(this.questions);
         this.questionsObj = questions.questions;
         this.roomObj = JSON.parse(this.room);
+        setInterval(this.countMembers, 5000);
     },
 }
 </script>

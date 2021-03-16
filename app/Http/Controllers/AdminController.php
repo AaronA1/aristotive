@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use Exception;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -22,7 +19,7 @@ class AdminController extends Controller
      *
      * @return Renderable
      */
-    public function dashboard()
+    public function dashboard(): Renderable
     {
         $rooms = Room::all();
         return view('admin.dashboard', ['rooms' => $rooms]);
@@ -35,7 +32,7 @@ class AdminController extends Controller
      * @return Renderable
      * @throws Exception
      */
-    public function roomDashboard(Room $room)
+    public function roomDashboard(Room $room): Renderable
     {
         $files = glob($room->path.'/*.json');
         $images = glob($room->path.'/*.{jpg,png}', GLOB_BRACE);
@@ -44,8 +41,7 @@ class AdminController extends Controller
             copy($image, public_path().'/'.basename($image));
         }
 
-        $filename = $files[0];
-        $questionsJson = file_get_contents($filename);
+        $questionsJson = file_get_contents($files[0]);
         // Pass json directly into Vue component instead of decoding and re-encoding
 
         return view('admin.session', ['room' => $room, 'questions' => $questionsJson]);
