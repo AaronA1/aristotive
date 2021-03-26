@@ -71,11 +71,6 @@ class QuizController
      */
     public function postQuestion(Request $request)
     {
-//        $room = Room::find($request['roomId']);
-//
-//        $room->current_question = $request['questionIndex'];
-//        $room->save();
-
         $options = $request['question']['options'] ?? null;
         if ($options) {
             $options = json_encode($request['question']['options']);
@@ -114,20 +109,6 @@ class QuizController
     public function countSessions(): Response
     {
         return response(Session::all());
-    }
-
-    /**
-     * Pull down the current room along with questions and responses
-     *
-     * @param Room $room
-     * @return ResponseFactory|Response
-     * @throws Exception
-     */
-    public function endQuiz(Room $room)
-    {
-        $room->delete();
-
-        return response("Success");
     }
 
 }
