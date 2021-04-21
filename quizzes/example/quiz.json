@@ -1,38 +1,23 @@
 {
     "questions": [
         {
+            "type": "multi-choice",
+            "question": "What does HTTP stand for",
+            "options": ["Hyperlink To The Page", "HyperText Transfer Protocol", "Hyperlink Transfer To Page", "HyperText Transport Page"]
+        },
+        {
             "type": "true-false",
-            "question": "This line of code will compile",
+            "question": "This piece of code has no errors",
             "image": "testphoto.jpg"
         },
         {
-            "type": "multi-choice",
-            "question": "What is 2 x 2?",
-            "options": ["1", "2", "3", "4"]
+            "type": "input",
+            "question": "Write a javascript function to print 'Hello' to the console"
         },
         {
             "type": "sortable",
             "question": "Order these from smallest to largest",
             "options": ["100", "300", "40", "150"]
-        },
-        {
-            "type": "input",
-            "question": "What is the circled part in this image called?",
-            "image": "testphoto.png"
-        },
-        {
-            "type": "input",
-            "question": "Write a javascript function to log 'Hello' to the console"
-        },
-        {
-            "type": "multi-choice",
-            "question": "What is the word 'coding' an example of?",
-            "options": ["Adjective", "Adverb", "Verb", "Noun"]
-        },
-        {
-            "type": "multi-choice",
-            "question": "What does HTTP stand for",
-            "options": ["Hyperlink To The Page", "HyperText Transfer Protocol", "Hyperlink Transfer To Page", "HyperText Transport Page"]
         }
     ]
 }
