@@ -23,7 +23,7 @@
             </div>
             <div v-if="questionType === 'input'">
                 <b-list-group>
-                    <b-form-input v-model="input"></b-form-input>
+                    <b-form-input name="inputAnswer" v-model="input"></b-form-input>
                 </b-list-group>
                 <b-button v-on:click="$emit('submit', input)" variant="success">
                     Submit

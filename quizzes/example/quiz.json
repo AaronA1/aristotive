@@ -1,6 +1,10 @@
 {
     "questions": [
         {
+            "type": "input",
+            "question": "Write a javascript function to print 'Hello' to the console"
+        },
+        {
             "type": "multi-choice",
             "question": "What does HTTP stand for",
             "options": ["Hyperlink To The Page", "HyperText Transfer Protocol", "Hyperlink Transfer To Page", "HyperText Transport Page"]
@@ -9,10 +13,6 @@
             "type": "true-false",
             "question": "This piece of code has no errors",
             "image": "testphoto.jpg"
-        },
-        {
-            "type": "input",
-            "question": "Write a javascript function to print 'Hello' to the console"
         },
         {
             "type": "sortable",

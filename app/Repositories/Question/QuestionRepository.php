@@ -17,4 +17,9 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     {
         return $this->model->where('room_id', $roomId)->latest()->first();
     }
+
+    public function getAllForRoom($roomId)
+    {
+        return $this->model->where('room_id', $roomId);
+    }
 }
