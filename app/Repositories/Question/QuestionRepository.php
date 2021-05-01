@@ -13,13 +13,13 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         parent::__construct($model);
     }
 
-    public function getLatestQuestion($roomId)
-    {
-        return $this->model->where('room_id', $roomId)->latest()->first();
-    }
-
     public function getAllForRoom($roomId)
     {
         return $this->model->where('room_id', $roomId);
+    }
+
+    public function getLatestQuestion($roomId)
+    {
+        return $this->getAllForRoom($roomId)->latest()->first();
     }
 }

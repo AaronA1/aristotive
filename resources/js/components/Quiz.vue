@@ -34,8 +34,11 @@ export default {
             if(answer === null) {
                 return;
             }
-            this.loading = true;
-            axios.post('/api/quiz/response', {questionId: this.question.id, answer: answer}).then(response => {
+            axios.post('/api/quiz/response', {
+                questionId: this.question.id,
+                answer: answer
+            }).then(response => {
+                this.loading = true;
             }).catch(error => {
                 console.log(error);
             });
