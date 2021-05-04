@@ -94,7 +94,7 @@ class QuizControllerTest extends TestCase
         $controller = new QuizController($questionRepo, $responseRepo);
         $this->app->instance('App\Http\Controllers\QuizController', $controller);
 
-        // Post request and assert response ok
+        // Send get request and assert response ok
         $response = $this->get('/api/quiz/question/'.$this->room->id);
         $response->assertOk();
     }
