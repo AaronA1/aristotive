@@ -32,9 +32,9 @@ Route::get('/admin', 'AdminController@dashboard')->name('dashboard');
 Route::get('/admin/{room}', 'AdminController@roomDashboard')->name('session');
 
 /** Room join route */
-Route::post('/quiz', 'RoomController@joinRoom')->name('joinRoom');
+Route::post('/quiz', 'RoomController@join')->name('joinRoom');
 
 /** Room resource route */
-Route::resource('room', 'RoomController')->except(['create', 'edit', 'update']);
+Route::resource('room', 'RoomController')->only(['store', 'show', 'destroy']);
 
 

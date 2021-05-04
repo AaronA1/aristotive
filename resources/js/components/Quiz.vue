@@ -61,7 +61,6 @@ export default {
         },
     },
     created() {
-        // this.fetchQuestion();
         setInterval(this.fetchQuestion, 5000);
     }
 }

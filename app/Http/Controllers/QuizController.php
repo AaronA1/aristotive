@@ -2,32 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
-use App\Models\Response;
 use App\Models\Room;
+use App\Models\Session;
+use App\Repositories\Question\QuestionRepositoryInterface;
+use App\Repositories\Response\ResponseRepositoryInterface;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
 
 class QuizController
 {
+    private $questionRepo;
+    private $responseRepo;
+
+    public function __construct(QuestionRepositoryInterface $questionRepo, ResponseRepositoryInterface $responseRepo)
+    {
+        $this->questionRepo = $questionRepo;
+        $this->responseRepo = $responseRepo;
+    }
 
     /**
      * Fetch current active question for the given quiz via API
      *
      * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function getQuestion(Room $room)
     {
-        $activeQ = Question::where('room_id', $room->id)
-            ->latest()
-            ->first();
+        $activeQ = $this->questionRepo->getLatestQuestion($room->id);
 
         if(empty($activeQ)) {
             return response('No active question', 204);
         }
+
         // If there are options, decode back into array
         if (!empty($activeQ->options)) {
             $activeQ->options = json_decode($activeQ['options']);
@@ -40,14 +49,11 @@ class QuizController
      * Fetch question responses for the given quiz via API
      *
      * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function getResponses(Room $room)
     {
-        $activeQ = Question::where([
-            ['room_id', $room->id],
-//            ['active', true]
-        ])->latest()->first();
+        $activeQ = $this->questionRepo->getLatestQuestion($room->id);
 
         $responses = $activeQ->responses()->get();
         foreach ($responses as $response) {
@@ -61,21 +67,16 @@ class QuizController
      * Post a new active question for the given quiz via API
      *
      * @param Request $request
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function postQuestion(Request $request)
     {
-//        $room = Room::find($request['roomId']);
-//
-//        $room->current_question = $request['questionIndex'];
-//        $room->save();
-
         $options = $request['question']['options'] ?? null;
         if ($options) {
             $options = json_encode($request['question']['options']);
         }
 
-        $question = Question::create([
+        $question = $this->questionRepo->create([
             'room_id' => $request['roomId'],
             'type' => $request['question']['type'],
             'question' => $request['question']['question'],
@@ -90,11 +91,11 @@ class QuizController
      * Post a response for the given question via API
      *
      * @param Request $request
-     * @return ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function postResponse(Request $request)
     {
-        $response = Response::create([
+        $response = $this->responseRepo->create([
             'question_id' => $request['questionId'],
             'answer' => json_encode($request['answer'])
         ]);
@@ -102,17 +103,12 @@ class QuizController
     }
 
     /**
-     * Pull down the current room along with questions and responses
-     *
-     * @param Room $room
-     * @return ResponseFactory|\Illuminate\Http\Response
-     * @throws Exception
+     * Count the number of current sessions for member count
+     * @return Response
      */
-    public function endQuiz(Room $room)
+    public function countSessions(): Response
     {
-        $room->delete();
-
-        return response("Success");
+        return response(Session::all());
     }
 
 }
