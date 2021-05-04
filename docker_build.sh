@@ -10,7 +10,7 @@ else
 fi
 
 # build container & install packages
-docker-compose -f docker-compose2.yml up --build --remove-orphans -d
+docker-compose up --build --remove-orphans -d
 docker-compose exec aristotive-app composer install
 docker-compose exec aristotive-app php artisan key:generate
 docker-compose exec aristotive-app php artisan migrate:fresh --seed

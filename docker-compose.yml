@@ -1,50 +1,68 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
+version: '3.5'
 services:
-    laravel.test:
-        build:
-            context: ./vendor/laravel/sail/runtimes/8.0
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.0/app
-        ports:
-            - '${APP_PORT:-80}:80'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - mysql
-            - selenium
-    mysql:
-        image: 'mysql:8.0'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        volumes:
-            - 'sailmysql:/var/lib/mysql'
-        networks:
-            - sail
-        healthcheck:
-          test: ["CMD", "mysqladmin", "ping"]
-    selenium:
-       image: 'selenium/standalone-chrome'
-       volumes:
-            - '/dev/shm:/dev/shm'
-       networks:
-           - sail
-networks:
-    sail:
-        driver: bridge
+
+  # The Application
+  aristotive-app:
+    container_name: aristotive-app
+    image: aristotive-app
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - 9000:9000
+    depends_on:
+      - aristotive-db
+    environment:
+      - "COMPOSER_MEMORY_LIMIT=-1"
+
+  # The Web Server
+  aristotive-web:
+    container_name: aristotive-web
+    image: aristotive-web
+    build:
+      context: ./
+      dockerfile: docker/web/Dockerfile
+    working_dir: /var/www
+    depends_on:
+      - aristotive-app
+    volumes:
+      - ./public:/var/www/public
+    ports:
+      - 8084:80
+
+  # The Database
+  aristotive-db:
+    container_name: aristotive-db
+    image: mysql:5.7
+    volumes:
+      - aristotive-db:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=aristotive"
+      - "MYSQL_USER=aristotive"
+      - "MYSQL_PASSWORD=aristotive"
+      - "MYSQL_DATABASE=aristotive"
+    ports:
+      - 33062:3306
+
+  composer:
+    image: composer:2.0
+    command: install --ignore-platform-reqs --no-scripts
+    volumes:
+      - $PWD:/app
+
+  # Node.js
+  aristotive-node:
+    container_name: aristotive-node
+    image: "node:lts-buster-slim"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=dev
+    volumes:
+      - ./:/home/node/app
+
 volumes:
-    sailmysql:
-        driver: local
+  aristotive-db:
